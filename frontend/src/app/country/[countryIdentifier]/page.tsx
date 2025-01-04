@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import React from 'react';
 import {
@@ -9,14 +9,17 @@ import {
   CountryBorder,
 } from '../../../api/countries';
 import { Loading } from '../../../../components/Loading';
+import Image from 'next/image';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const CountryInfoPage = () => {
   const pathname = usePathname();
   const pathParts = pathname.split('/');
   const [countryCodePath, countryNamePath] = pathParts[2].split('-');
+  const router = useRouter();
 
   const [countryName, setCountryName] = useState<string>('');
-  const [countryFlag, setCountryFlag] = useState<string>('');
+  const [countryFlag, setCountryFlag] = useState<string | null>('');
 
   const [borders, setBorders] = useState<CountryBorder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,14 +29,18 @@ const CountryInfoPage = () => {
     const fetchCountryDetails = async () => {
       try {
         if (countryCodePath && countryNamePath) {
-          const flagResponse = await getCountryFlags(countryNamePath);
           const bordersResponse = await getCountryBorders(countryCodePath);
-
-          setCountryName(flagResponse.name);
-          setCountryFlag(flagResponse.flag);
           setBorders(bordersResponse);
+          try {
+            const flagResponse = await getCountryFlags(countryNamePath);
+            setCountryName(flagResponse.name);
+            setCountryFlag(flagResponse.flag);
+          } catch {
+            setCountryFlag(null);
+            setCountryName(countryNamePath);
+          }
         }
-      } catch (err) {
+      } catch {
         setError('Failed to fetch country details');
       } finally {
         setLoading(false);
@@ -48,8 +55,25 @@ const CountryInfoPage = () => {
 
   return (
     <div className="p-4">
+      <FaArrowLeft
+        className="mr-2 mb-8"
+        onClick={() => router.push('/countries')}
+      />
       <h1 className="text-2xl font-bold mb-4">{countryName}</h1>
-      <img src={countryFlag} alt={`${countryName} flag`} className="mb-4" />
+      <div className="w-128 h-96  overflow-hidden mb-4 relative">
+        {countryFlag ? (
+          <Image
+            src={countryFlag || ''}
+            alt={`${countryName} flag`}
+            objectFit="cover"
+            className="absolute"
+            width={583}
+            height={300}
+          />
+        ) : (
+          <div>No hay imagen disponible</div>
+        )}
+      </div>
       <h2 className="text-xl font-bold mb-2">Border Countries</h2>
       <ul className="flex flex-wrap gap-4">
         {borders.map((border) => (
