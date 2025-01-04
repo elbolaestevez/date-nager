@@ -34,6 +34,8 @@ Este proyecto está dividido en dos partes principales: **Backend** y **Frontend
 3. Inicia la aplicación:
    ```bash
    npm run dev
-   ```
 
+
+   ```
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4040/api
 ---
