@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { PopulationChart } from '../../../../../components/PopulationChart';
 import { PopulationCount, getCountryPopulation } from '@/api/countries';
+import { Loading } from '../../../../../components/Loading';
 
 const CountryInfoPage = () => {
   const pathname = usePathname();
@@ -33,7 +34,7 @@ const CountryInfoPage = () => {
     fetchCountryDetails();
   }, [countryNamePath]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
   if (error) return <p>{error}</p>;
 
   return (
