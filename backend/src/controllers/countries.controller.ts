@@ -22,7 +22,6 @@ export class CountriesController {
   static async getCountryPopulation(req: Request, res: Response) {
     try {
       const { countryName } = req.params;
-      console.log("countryName", countryName);
       const population = await CountriesService.getCountryPopulation(
         countryName
       );
@@ -35,10 +34,7 @@ export class CountriesController {
   static async getCountryFlags(req: Request, res: Response) {
     try {
       const { countryName } = req.params;
-      console.log("countryName", countryName);
-      const population = await CountriesService.getCountryFlags(
-        countryName
-      );
+      const population = await CountriesService.getCountryFlags(countryName);
       res.json(population);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch flags for country" });
