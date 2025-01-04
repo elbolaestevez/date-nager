@@ -7,10 +7,7 @@ import {
   getCountryFlags,
   getCountryBorders,
   CountryBorder,
-  getCountryPopulation,
-  PopulationCount,
 } from '../../../api/countries';
-import { PopulationChart } from '../../../../components/PopulationChart';
 
 const CountryInfoPage = () => {
   const pathname = usePathname();
@@ -19,7 +16,6 @@ const CountryInfoPage = () => {
 
   const [countryName, setCountryName] = useState<string>('');
   const [countryFlag, setCountryFlag] = useState<string>('');
-  const [populationData, setPopulationData] = useState<PopulationCount[]>([]);
 
   const [borders, setBorders] = useState<CountryBorder[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,10 +27,6 @@ const CountryInfoPage = () => {
         if (countryCodePath && countryNamePath) {
           const flagResponse = await getCountryFlags(countryNamePath);
           const bordersResponse = await getCountryBorders(countryCodePath);
-          const populationResponse =
-            await getCountryPopulation(countryNamePath);
-
-          setPopulationData(populationResponse.populationCounts);
 
           setCountryName(flagResponse.name);
           setCountryFlag(flagResponse.flag);
@@ -71,9 +63,12 @@ const CountryInfoPage = () => {
         ))}
       </ul>
       <h2 className="text-xl font-bold mb-2">Population Over Time</h2>
-      {/* <div style={{ width: '100%', height: '300px' }}> */}
-      <PopulationChart data={populationData} />
-      {/* </div> */}
+      <Link
+        href={`population/${countryCodePath}-${countryNamePath}`}
+        className="text-blue-500 hover:text-blue-700 underline"
+      >
+        View Population Chart
+      </Link>
     </div>
   );
 };

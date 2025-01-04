@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { PopulationCount } from '@/api/countries';
 
 ChartJS.register(
   CategoryScale,
@@ -20,11 +21,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-interface PopulationCount {
-  year: number;
-  value: number;
-}
 
 interface PopulationChartProps {
   data: PopulationCount[];
@@ -69,7 +65,7 @@ export const PopulationChart: React.FC<PopulationChartProps> = ({ data }) => {
         },
         ticks: {
           beginAtZero: true,
-          stepSize: 100000000,
+          stepSize: Math.ceil(Math.max(...data.map((d) => d.value)) / 10),
         },
       },
     },
@@ -89,5 +85,9 @@ export const PopulationChart: React.FC<PopulationChartProps> = ({ data }) => {
     },
   };
 
-  return <Line data={populationChartData} options={options} />;
+  return (
+    <div style={{ width: '80%', height: '800px' }}>
+      <Line data={populationChartData} options={options} />
+    </div>
+  );
 };
